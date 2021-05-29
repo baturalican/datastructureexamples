@@ -32,9 +32,9 @@ public:
 	void display();
 	
 private:
-	int* elements {nullptr};
-	short size {-1};
-	int top {-1};
+	int* elements;
+	short size;
+	int top;
 };
 
 #endif // STACK_H

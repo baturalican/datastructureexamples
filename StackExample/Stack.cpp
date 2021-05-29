@@ -1,21 +1,17 @@
 #include <iostream>
 #include "Stack.h"
 
-Stack::Stack(short size)
-{
+Stack::Stack(short stackSize) : size{stackSize}{
 	// Create a storage on the heap
-	this->elements = new int[size];
+	this->elements = new int[stackSize];
 	
 	// First we initialize all the elements on the stack to 0
-	for (short i = 0; i < size; ++i) {
+	for (short i = 0; i < stackSize; ++i) {
 		elements[i] = 0;
 	}
-	
-	this->size = size;
 }
 
-Stack::~Stack()
-{
+Stack::~Stack(){
 	delete[] elements;
 }
 
