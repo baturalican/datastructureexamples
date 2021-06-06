@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Queue.h"
+#include "CircularQueue.h"
 
-Queue::Queue(short queueSize) : size{queueSize}, front{-1}, rear{-1} {
+CircularQueue::CircularQueue(short queueSize) : size{queueSize}, front{-1}, rear{-1}, elementCount{0} {
 	// Create a storage for elements on the heap
 	this->elements = new int[queueSize];
 	
@@ -11,17 +11,16 @@ Queue::Queue(short queueSize) : size{queueSize}, front{-1}, rear{-1} {
 	}
 }
 
-bool Queue::isFull() {
-	// NOTE here that even if we dequeue one element and there is an empty spot in the queue we cannot access these area till we empty the queue
-	// That's why, when the rear end hits the queue size - 1, the queue becomes full
-	if (rear == size - 1) {
+bool CircularQueue::isFull() {
+	// We check here that if the rear is one position behind the front position when we use modulo operator (since it is circular queue), then it means the queue is full
+	if ((rear + 1) % size == front) {
 		return true;
 	}
 	
 	return false;
 }
 
-bool Queue::isEmpty() {
+bool CircularQueue::isEmpty() {
 	// Rear is -1 means that there is no enqueuing operation happened
 	if (rear == -1) {
 		return true;
@@ -30,16 +29,11 @@ bool Queue::isEmpty() {
 	return false;
 }
 
-int Queue::count() {
-	if (isEmpty()) {
-		return 0;
-	}
-	
-	// We cannot apply rear - front + 1 when the queue is empty, cuz both values are -1 at that time and this formula gives us 1 which is wrong
-	return rear - front + 1;
+int CircularQueue::count() {
+	return elementCount;
 }
 
-void Queue::enqueue(int element) {
+void CircularQueue::enqueue(int element) {
 	if (isFull()) {
 		std::cout << "The queue is full, cannot insert the element!!!" << std::endl;
 		return;
@@ -51,11 +45,14 @@ void Queue::enqueue(int element) {
 	} 
 	// If the queue is NOT full and there is at least one element in the queue, we just insert the element and increase the rear end position
 	else {
-		elements[++rear] = element;
+		rear = (rear + 1) % size;
+		elements[rear] = element;
 	}
+	
+	++elementCount;
 }
 
-int Queue::dequeue() {
+int CircularQueue::dequeue() {
 	int element {0};
 	if (isEmpty()) {
 		std::cout << "The queue is empty, cannot remove the element!!!" << std::endl;
@@ -64,6 +61,7 @@ int Queue::dequeue() {
 		// When the queue is NOT empty, we guarantee the dequeue operation, so we just remove the first element from the front end and zeroize that position
 		element = elements[front];
 		elements[front] = 0;
+		--elementCount;
 		
 		// If there is only one element in the queue, we just reset the front and the rear positions in the queue
 		if (front == rear) {
@@ -71,16 +69,17 @@ int Queue::dequeue() {
 			rear = -1;
 		}
 		
-		// If there is more than one element in the queue, we just increase the front end position after removing the first from the front
+		// If there is more than one element in the queue, we just increase the front end position 
+		// (Since it is a circular queue, we have to include modulo operation after increasing front position by one)
 		else {
-			++front;
+			front = (front + 1) % size;
 		}
 	}
 	
 	return element;
 }
 
-void Queue::display() {
+void CircularQueue::display() {
 	for (short i = 0; i < size; ++i) {
 		std::cout << elements[i] << " ";
 	}
@@ -88,7 +87,7 @@ void Queue::display() {
 	std::cout << std::endl;
 }
 
-Queue::~Queue() {
+CircularQueue::~CircularQueue() {
 	// Just freeing up the heap storage
 	delete[] elements;
 }
