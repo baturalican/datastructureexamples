@@ -17,6 +17,7 @@ Node* SinglyLinkedList::isNodeFound(int key) {
 	temp = nullptr;
 	Node* ptr = head;
 	
+	// Travers through the entire linked list elements
 	while(ptr != nullptr) {
 		if (ptr->getKey() == key) {
 			temp = ptr;
@@ -29,15 +30,18 @@ Node* SinglyLinkedList::isNodeFound(int key) {
 }
 
 void SinglyLinkedList::appendNode(Node* node) {
+	// If same node exists
 	if (isNodeFound(node->getKey()) != nullptr) {
 		std::cout << "Node already exists" << std::endl;
 	} else {
+		// If there is no node in the list
 		if (head == nullptr) {
 			head = node;
 			std::cout << "Node appended" << std::endl;
 			return;
 		} else {
 			Node* ptr = head;
+			// Just go the end of the list
 			while (ptr->getNextNode() != nullptr) {
 				ptr = ptr->getNextNode();
 			}
@@ -48,6 +52,7 @@ void SinglyLinkedList::appendNode(Node* node) {
 }
 
 void SinglyLinkedList::prependNode(Node* node) {
+	// If same node exists
 	if (isNodeFound(node->getKey()) != nullptr) {
 		std::cout << "Node already exists" << std::endl;
 	} else {
@@ -61,11 +66,13 @@ void SinglyLinkedList::prependNode(Node* node) {
 void SinglyLinkedList::insertNodeAfter(int key, Node* node) {
 	Node* foundNode = nullptr;
 	foundNode = isNodeFound(key);
+	// Invalid key, no node found with the given key
 	if (!foundNode) {
-		std::cout << "No node found with the key value of: " << key << std::endl;
+		std::cout << "No node found with the key of: " << key << std::endl;
 		return;
 	}
 	
+	// If same node exists
 	if (foundNode->getKey() == node->getKey()) {
 		std::cout << "Node is already on the list" << std::endl;
 		return;
@@ -83,17 +90,20 @@ void SinglyLinkedList::deleteNodeByKey(int key) {
 		return;
 	}
 	
+	// If head is to be deleted
 	if (head->getKey() == key) {
 		head = head->getNextNode();
 		std::cout << "Node deleted" << std::endl;
 		return;
 	}
 	
+	// We have to keep previous element here so that when we delete the node, we could link the previous node to the next node
 	Node* temp = nullptr;
 	Node* previous = head;
 	Node* current = head->getNextNode();
 	
 	while (current != nullptr) {
+		// If you find the list element
 		if (current->getKey() == key) {
 			temp = current;
 			current = nullptr;
@@ -104,6 +114,7 @@ void SinglyLinkedList::deleteNodeByKey(int key) {
 		}
 	}
 	
+	// If you find something to be deleted, delete it
 	if (temp != nullptr) {
 		previous->setNextNode(temp->getNextNode());
 		std::cout << "Node deleted" << std::endl;
@@ -118,7 +129,7 @@ void SinglyLinkedList::updateNodeByKey(int key, int newValue) {
 	Node* foundNode = isNodeFound(key);
 	
 	if (!foundNode) {
-		std::cout << "No node found with a key value of: " << key << std::endl;
+		std::cout << "No node found with a key of: " << key << std::endl;
 		return;
 	}
 	
